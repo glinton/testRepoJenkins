@@ -9,9 +9,12 @@ podTemplate = "dind-1-12"
 dindContainer = "dind"
 opsDir = "ops"
 repoTag = "quay.io/influxdb/"
-shouldBuild = "${WORKSPACE}/vars/thing"
 
 pipeline {
+  environment {
+    shouldBuild = "${WORKSPACE}/vars/thing"
+  }
+
   agent {
     node {
       label "${podTemplate}"

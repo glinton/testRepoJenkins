@@ -36,9 +36,7 @@ pipeline {
   stages {
     stage('stash a real thing') {
       when {
-        expression {
-          environment name: 'REAL_STASH', value: 'true'
-        }
+        environment name: 'REAL_STASH', value: 'true'
       }
 
       steps {
@@ -60,9 +58,7 @@ pipeline {
 
     stage('stash a fake thing') {
       when {
-        expression {
-          environment name: 'REAL_STASH', value: 'false'
-        }
+        environment name: 'REAL_STASH', value: 'false'
       }
 
       steps {

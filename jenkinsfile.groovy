@@ -31,11 +31,6 @@ pipeline {
       defaultValue: true,
       description: 'stash a real file'
     )
-    booleanParam(
-      name: 'FAKE_STASH',
-      defaultValue: false,
-      description: 'stash no file'
-    )
   }
 
   stages {
@@ -52,7 +47,7 @@ pipeline {
           container(dindContainer) {
             sh "mkdir -p ./vars"
             sh "chmod 777 -R ./vars"
-            sh "rm -f ./vars/shouldbuild"
+            sh "rm -f ./vars/thing"
           }
           sh "mkdir -p ./vars"
           sh "touch ./vars/thing"
@@ -66,7 +61,7 @@ pipeline {
     stage('stash a fake thing') {
       when {
         expression {
-          environment name: 'FAKE_STASH', value: 'true'
+          environment name: 'REAL_STASH', value: 'false'
         }
       }
 
@@ -76,7 +71,7 @@ pipeline {
           container(dindContainer) {
             sh "mkdir -p ./vars"
             sh "chmod 777 -R ./vars"
-            sh "rm -f ./vars/shouldbuild"
+            sh "rm -f ./vars/thing"
           }
           sh "mkdir -p ./vars"
           sh "ls -lah ./vars"
@@ -96,17 +91,17 @@ pipeline {
 
       steps {
         script {
-          sh "hola gato"
+          echo "hola gato"
         }
       }
 
       post {
         success {
-          sh "yay"
+          echo "yay"
         }
 
         failure {
-          sh "bummer"
+          echo "bummer"
         }
       }
     }

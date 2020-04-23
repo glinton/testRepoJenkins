@@ -25,6 +25,19 @@ pipeline {
     buildDiscarder(logRotator(numToKeepStr: '2'))
   }
 
+  parameters {
+    booleanParam(
+      name: 'REAL_STASH',
+      defaultValue: true,
+      description: 'stash a real file'
+    )
+    booleanParam(
+      name: 'FAKE_STASH',
+      defaultValue: false,
+      description: 'stash no file'
+    )
+  }
+
   stages {
     stage('stash a real thing') {
       when {

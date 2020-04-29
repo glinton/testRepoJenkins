@@ -12,7 +12,7 @@ repoTag = "quay.io/influxdb/"
 
 pipeline {
   environment {
-    shouldBuild = "${WORKSPACE}/vars/thing"
+    testStashed = "${WORKSPACE}/vars/thing"
   }
 
   agent {
@@ -48,10 +48,10 @@ pipeline {
             sh "rm -f ./vars/thing"
           }
           sh "mkdir -p ./vars"
-          sh "touch ./vars/thing"
+          sh "echo hi > ./vars/thing"
           sh "ls -lah ./vars"
 
-          stash name: 'shouldbuild', includes: 'vars/*'
+          stash name: 'testStash', includes: 'vars/*'
         }
       }
     }
@@ -70,9 +70,10 @@ pipeline {
             sh "rm -f ./vars/thing"
           }
           sh "mkdir -p ./vars"
+          sh "touch ./vars/thing"
           sh "ls -lah ./vars"
 
-          stash name: 'shouldbuild', includes: 'vars/*'
+          stash name: 'testStash', includes: 'vars/*'
         }
       }
     }
@@ -80,8 +81,8 @@ pipeline {
     stage('unstash a thing') {
       when {
         expression {
-          unstash name: 'shouldbuild'
-          return fileExists("${shouldBuild}")
+          unstash name: 'testStash'
+          return fileExists("${testStashed}") && readFile("${testStashed}").contains("hi")
         }
       }
 

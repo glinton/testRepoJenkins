@@ -85,6 +85,12 @@ pipeline {
         }
       }
 
+      agent {
+        node {
+          label "${podTemplate}"
+        }
+      }
+
       steps {
         script {
           echo "hola gato"

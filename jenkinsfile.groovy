@@ -70,7 +70,6 @@ pipeline {
             sh "rm -f ./vars/thing"
           }
           sh "mkdir -p ./vars"
-          sh "touch ./vars/thing"
           sh "ls -lah ./vars"
 
           stash name: 'testStash', includes: 'vars/*'
@@ -78,8 +77,31 @@ pipeline {
       }
     }
 
+/*
+    stage('non permissive stashfile write') {
+      agent {
+        node {
+          label "${podTemplate}"
+        }
+      }
+
+      steps {
+        dir("${WORKSPACE}") {
+          // don't think this actually does things where it's inside a container.
+          container(dindContainer) {
+            sh "mkdir -p ./vars"
+            sh "rm -f ./vars/thing"
+          }
+          sh "touch ./vars/thing"
+          sh "chmod 000 -R ./vars"
+        }
+      }
+    }
+*/
+
     stage('unstash a thing') {
       when {
+        beforeAgent true
         expression {
           unstash name: 'testStash'
           return fileExists("${testStashed}") && readFile("${testStashed}").contains("hi")
@@ -94,6 +116,8 @@ pipeline {
 
       steps {
         script {
+          sh "mkdir -p ./vars"
+          sh "touch ./vars/things"
           echo "hola gato"
         }
       }
